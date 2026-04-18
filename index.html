@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vehicle Quote Form</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: transparent;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .form-wrap {
+      background: #0f0f0f;
+      border-radius: 14px;
+      padding: 32px 28px 28px;
+      width: 100%;
+      max-width: 700px;
+    }
+    .form-title {
+      color: #fff;
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      letter-spacing: 0.3px;
+    }
+    .form-grid-top {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px 20px;
+      margin-bottom: 16px;
+    }
+    .form-grid-vehicle {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 16px 20px;
+      margin-bottom: 20px;
+    }
+    .form-grid-full {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .field label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: #999;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+    .field input,
+    .field select,
+    .field textarea {
+      width: 100%;
+      background: #1e1e1e;
+      border: 1px solid #2e2e2e;
+      border-radius: 7px;
+      padding: 11px 13px;
+      font-size: 14px;
+      color: #fff;
+      outline: none;
+      transition: border-color 0.2s;
+      appearance: none;
+      -webkit-appearance: none;
+    }
+    .field select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      padding-right: 32px;
+      cursor: pointer;
+    }
+    .field select:disabled { opacity: 0.4; cursor: not-allowed; }
+    .field input::placeholder,
+    .field textarea::placeholder { color: #555; }
+    .field input:focus,
+    .field select:focus,
+    .field textarea:focus {
+      border-color: #22d9d9;
+      box-shadow: 0 0 0 3px rgba(34,217,217,0.1);
+    }
+    .field select option { background: #1e1e1e; color: #fff; }
+    .field textarea { resize: vertical; min-height: 80px; }
+    .send-btn {
+      display: block;
+      width: 100%;
+      padding: 15px;
+      background: #22d9d9;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      color: #0f0f0f;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .send-btn:hover { background: #1ac4c4; }
+    .send-btn:active { transform: scale(0.99); }
+    .send-btn:disabled { background: #444; color: #888; cursor: not-allowed; }
+    .status {
+      margin-top: 14px;
+      text-align: center;
+      font-size: 14px;
+      min-height: 20px;
+    }
+    .status.success { color: #22d9d9; }
+    .status.error { color: #ff6b6b; }
+    @media (max-width: 520px) {
+      .form-grid-top { grid-template-columns: 1fr; }
+      .form-grid-vehicle { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="form-wrap">
+  <p class="form-title">Get a Free Detail Quote</p>
+
+  <div class="form-grid-top">
+    <div class="field">
+      <label>Full Name</label>
+      <input type="text" id="fullName" placeholder="Enter your full name" />
+    </div>
+    <div class="field">
+      <label>ZIP / Postal Code</label>
+      <input type="text" id="zip" placeholder="ZIP or postal code" />
+    </div>
+    <div class="field">
+      <label>Phone Number</label>
+      <input type="tel" id="phone" placeholder="+1 (555) 000-0000" />
+    </div>
+    <div class="field">
+      <label>Email</label>
+      <input type="email" id="email" placeholder="your@email.com" />
+    </div>
+  </div>
+
+  <div class="form-grid-vehicle">
+    <div class="field">
+      <label>Vehicle Make</label>
+      <select id="make">
+        <option value="">Select make...</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Vehicle Model</label>
+      <select id="model" disabled>
+        <option value="">Select model...</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>Vehicle Year</label>
+      <select id="year" disabled>
+        <option value="">Select year...</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="form-grid-full">
+    <div class="field">
+      <label>Notes / Reason for Contact</label>
+      <textarea id="notes" placeholder="Describe your vehicle's condition or what services you're interested in..."></textarea>
+    </div>
+  </div>
+
+  <button class="send-btn" id="submitBtn" onclick="submitForm()">Send</button>
+  <div class="status" id="status"></div>
+</div>
+
+<script>
+const WEBHOOK_URL = "https://services.leadconnectorhq.com/hooks/tkMfuKWvrfHug0YHroQC/webhook-trigger/db164d40-6e8d-48f9-86af-51dfd68f4160";
+
+const VEHICLES = {
+  "Acura":         { models: ["ILX","MDX","NSX","RDX","RLX","TLX","TSX"], start: 1986 },
+  "Alfa Romeo":    { models: ["4C","Giulia","Stelvio","Tonale","Spider"], start: 1950 },
+  "Aston Martin":  { models: ["DB11","DB9","DBS","DBX","Vantage","Rapide"], start: 1948 },
+  "Audi":          { models: ["A3","A4","A5","A6","A7","A8","e-tron","Q3","Q4 e-tron","Q5","Q7","Q8","R8","RS3","RS5","RS6","RS7","S3","S4","S5","S6","S7","S8","SQ5","SQ7","TT"], start: 1965 },
+  "BMW":           { models: ["1 Series","2 Series","3 Series","4 Series","5 Series","6 Series","7 Series","8 Series","i3","i4","i7","iX","M2","M3","M4","M5","M8","X1","X2","X3","X4","X5","X6","X7","XM","Z4"], start: 1952 },
+  "Buick":         { models: ["Enclave","Encore","Encore GX","Envision","LaCrosse"], start: 1904 },
+  "Cadillac":      { models: ["CT4","CT5","Escalade","Escalade ESV","Lyriq","XT4","XT5","XT6"], start: 1902 },
+  "Chevrolet":     { models: ["Blazer","Bolt EV","Camaro","Colorado","Corvette","Equinox","Malibu","Silverado 1500","Silverado 2500HD","Suburban","Tahoe","Trailblazer","Traverse","Trax"], start: 1912 },
+  "Chrysler":      { models: ["300","Pacifica","Voyager"], start: 1925 },
+  "Dodge":         { models: ["Challenger","Charger","Durango","Hornet","Journey"], start: 1914 },
+  "Ferrari":       { models: ["296 GTB","488 GTB","812 Superfast","F8 Tributo","Portofino","Roma","SF90 Stradale","Purosangue"], start: 1947 },
+  "Ford":          { models: ["Bronco","Bronco Sport","Edge","Escape","Expedition","Explorer","F-150","F-150 Lightning","F-250","F-350","Maverick","Mustang","Mustang Mach-E","Ranger","Transit"], start: 1903 },
+  "Genesis":       { models: ["G70","G80","G90","GV70","GV80"], start: 2015 },
+  "GMC":           { models: ["Acadia","Canyon","Sierra 1500","Sierra 2500HD","Sierra 3500HD","Terrain","Yukon","Yukon XL"], start: 1912 },
+  "Honda":         { models: ["Accord","Civic","CR-V","Fit","HR-V","Insight","Odyssey","Passport","Pilot","Prologue","Ridgeline","S2000"], start: 1948 },
+  "Hyundai":       { models: ["Accent","Elantra","IONIQ 5","IONIQ 6","Kona","Palisade","Santa Cruz","Santa Fe","Sonata","Tucson","Venue"], start: 1967 },
+  "Infiniti":      { models: ["Q50","Q60","QX50","QX55","QX60","QX80"], start: 1989 },
+  "Jaguar":        { models: ["E-Pace","F-Pace","F-Type","I-Pace","XE","XF","XJ"], start: 1935 },
+  "Jeep":          { models: ["Cherokee","Compass","Gladiator","Grand Cherokee","Grand Cherokee L","Grand Wagoneer","Renegade","Wagoneer","Wrangler"], start: 1941 },
+  "Kia":           { models: ["Carnival","EV6","EV9","Forte","K5","Niro","Seltos","Soul","Sorento","Sportage","Stinger","Telluride"], start: 1944 },
+  "Lamborghini":   { models: ["Aventador","Huracan","Revuelto","Urus"], start: 1963 },
+  "Land Rover":    { models: ["Defender","Discovery","Discovery Sport","Range Rover","Range Rover Evoque","Range Rover Sport","Range Rover Velar"], start: 1948 },
+  "Lexus":         { models: ["ES","GS","GX","IS","LC","LX","NX","RC","RX","RZ","UX"], start: 1989 },
+  "Lincoln":       { models: ["Aviator","Corsair","Nautilus","Navigator"], start: 1917 },
+  "Maserati":      { models: ["Ghibli","GranTurismo","Grecale","Levante","MC20","Quattroporte"], start: 1914 },
+  "Mazda":         { models: ["CX-30","CX-5","CX-50","CX-90","Mazda3","Mazda6","MX-5 Miata","MX-30"], start: 1931 },
+  "McLaren":       { models: ["570S","600LT","720S","765LT","Artura","GT","Senna"], start: 1963 },
+  "Mercedes-Benz": { models: ["A-Class","AMG GT","C-Class","CLA","E-Class","EQS","G-Class","GLA","GLB","GLC","GLE","GLS","S-Class","SL"], start: 1926 },
+  "MINI":          { models: ["Clubman","Convertible","Countryman","Hardtop"], start: 1959 },
+  "Mitsubishi":    { models: ["Eclipse Cross","Mirage","Outlander","Outlander PHEV","Outlander Sport"], start: 1917 },
+  "Nissan":        { models: ["Altima","Armada","Frontier","GT-R","Kicks","Leaf","Maxima","Murano","Pathfinder","Rogue","Sentra","Titan","Versa","Z"], start: 1933 },
+  "Porsche":       { models: ["718 Boxster","718 Cayman","911","Cayenne","Macan","Panamera","Taycan"], start: 1948 },
+  "Ram":           { models: ["1500","1500 Classic","2500","3500","ProMaster","ProMaster City"], start: 2010 },
+  "Rivian":        { models: ["R1S","R1T"], start: 2021 },
+  "Rolls-Royce":   { models: ["Cullinan","Dawn","Ghost","Phantom","Spectre","Wraith"], start: 1906 },
+  "Subaru":        { models: ["Ascent","BRZ","Crosstrek","Forester","Impreza","Legacy","Outback","Solterra","WRX"], start: 1954 },
+  "Tesla":         { models: ["Cybertruck","Model 3","Model S","Model X","Model Y","Roadster"], start: 2008 },
+  "Toyota":        { models: ["4Runner","Camry","Corolla","Crown","GR86","GR Corolla","GR Supra","Highlander","Land Cruiser","Prius","RAV4","Sequoia","Sienna","Tacoma","Tundra","Venza"], start: 1937 },
+  "Volkswagen":    { models: ["Arteon","Atlas","Golf","Golf GTI","Golf R","ID.4","Jetta","Taos","Tiguan"], start: 1937 },
+  "Volvo":         { models: ["C40 Recharge","EX30","EX90","S60","S90","V60","XC40","XC60","XC90"], start: 1927 }
+};
+
+const makeEl  = document.getElementById('make');
+const modelEl = document.getElementById('model');
+const yearEl  = document.getElementById('year');
+
+Object.keys(VEHICLES).sort().forEach(make => {
+  const opt = document.createElement('option');
+  opt.value = make;
+  opt.textContent = make;
+  makeEl.appendChild(opt);
+});
+
+makeEl.addEventListener('change', function() {
+  const data = VEHICLES[this.value];
+  modelEl.innerHTML = '<option value="">Select model...</option>';
+  yearEl.innerHTML  = '<option value="">Select year...</option>';
+  modelEl.disabled  = true;
+  yearEl.disabled   = true;
+  if (!data) return;
+  [...data.models].sort().forEach(m => {
+    const opt = document.createElement('option');
+    opt.value = m; opt.textContent = m;
+    modelEl.appendChild(opt);
+  });
+  modelEl.disabled = false;
+  const currentYear = new Date().getFullYear();
+  for (let y = currentYear; y >= data.start; y--) {
+    const opt = document.createElement('option');
+    opt.value = y; opt.textContent = y;
+    yearEl.appendChild(opt);
+  }
+  yearEl.disabled = false;
+});
+
+async function submitForm() {
+  const fullName = document.getElementById('fullName').value.trim();
+  const phone    = document.getElementById('phone').value.trim();
+  const email    = document.getElementById('email').value.trim();
+  const zip      = document.getElementById('zip').value.trim();
+  const make     = makeEl.value;
+  const model    = modelEl.value;
+  const year     = yearEl.value;
+  const notes    = document.getElementById('notes').value.trim();
+  const statusEl = document.getElementById('status');
+  const btn      = document.getElementById('submitBtn');
+
+  if (!fullName || !phone || !email || !make || !model || !year) {
+    statusEl.className = 'status error';
+    statusEl.textContent = 'Please fill in all required fields.';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Sending...';
+  statusEl.className = 'status';
+  statusEl.textContent = '';
+
+  const payload = {
+    full_name:     fullName,
+    phone:         phone,
+    email:         email,
+    postal_code:   zip,
+    vehicle_make:  make,
+    vehicle_model: model,
+    vehicle_year:  year,
+    notes:         notes
+  };
+
+  try {
+    await fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    statusEl.className = 'status success';
+    statusEl.textContent = 'Thank you! We will be in touch shortly.';
+    btn.textContent = 'Sent!';
+    document.querySelectorAll('input, select, textarea').forEach(el => el.value = '');
+    modelEl.disabled = true;
+    yearEl.disabled  = true;
+  } catch (err) {
+    statusEl.className = 'status error';
+    statusEl.textContent = 'Something went wrong. Please try again.';
+    btn.disabled = false;
+    btn.textContent = 'Send';
+  }
+}
+</script>
+</body>
+</html>
