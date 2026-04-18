@@ -84,7 +84,7 @@
       box-shadow: 0 0 0 3px rgba(34,217,217,0.1);
     }
     .field select option { background: #1e1e1e; color: #fff; }
-    .field textarea { resize: none; min-height: 50px; overflow: hidden; }
+    .field textarea { resize: none !important; min-height: 50px; overflow: hidden; }
     .send-btn {
       display: block;
       width: 100%;
@@ -163,7 +163,8 @@
   <div class="form-grid-full">
     <div class="field">
       <label>Notes / Reason for Contact</label>
-      <textarea id="notes" placeholder="Describe your vehicle's condition or what services you're interested in..."></textarea>
+      <textarea id="notes" placeholder="Describe your vehicle's condition or what services you're interested in..." maxlength="300" oninput="updateCount(this)"></textarea>
+      <div style="text-align:right; font-size:11px; color:#555; margin-top:4px;"><span id="charCount">0</span>/300</div>
     </div>
   </div>
 
@@ -172,6 +173,10 @@
 </div>
 
 <script>
+function updateCount(el) {
+  document.getElementById('charCount').textContent = el.value.length;
+}
+
 const WEBHOOK_URL = "https://services.leadconnectorhq.com/hooks/tkMfuKWvrfHug0YHroQC/webhook-trigger/db164d40-6e8d-48f9-86af-51dfd68f4160";
 
 const VEHICLES = {
