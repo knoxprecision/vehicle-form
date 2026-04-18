@@ -167,7 +167,7 @@
     </div>
   </div>
 
-  <button class="send-btn" id="submitBtn" onclick="submitForm()">Send</button>
+  <button class="send-btn" id="submitBtn" onclick="submitForm()">Get a Quote Now</button>
   <div class="status" id="status"></div>
 </div>
 
@@ -292,7 +292,7 @@ async function submitForm() {
     });
     statusEl.className = 'status success';
     statusEl.textContent = 'Thank you! We will be in touch shortly.';
-    btn.textContent = 'Sent!';
+    btn.textContent = 'Quote Requested!';
     document.querySelectorAll('input, select, textarea').forEach(el => el.value = '');
     modelEl.disabled = true;
     yearEl.disabled  = true;
