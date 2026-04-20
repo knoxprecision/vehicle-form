@@ -11,7 +11,7 @@
       background: transparent;
       font-family: 'Segoe UI', sans-serif;
       display: block;
-      padding: 20px;
+      padding: 0;
       overflow-x: hidden;
       width: 100%;
       max-width: 100%;
@@ -311,12 +311,12 @@ async function submitForm() {
 
 <script>
   function sendHeight() {
-    const height = document.documentElement.scrollHeight;
+    const height = document.querySelector('.form-wrap').offsetHeight + 40;
     window.parent.postMessage({ frameHeight: height }, '*');
   }
   window.addEventListener('load', sendHeight);
   window.addEventListener('resize', sendHeight);
-  new ResizeObserver(sendHeight).observe(document.body);
+  new ResizeObserver(sendHeight).observe(document.querySelector('.form-wrap'));
 </script>
 
 </body>
