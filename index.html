@@ -12,8 +12,7 @@
       font-family: 'Segoe UI', sans-serif;
       display: flex;
       justify-content: center;
-      align-items: center;
-      min-height: 100vh;
+      align-items: flex-start;
       padding: 20px;
       overflow-x: hidden;
       width: 100%;
@@ -26,9 +25,7 @@
       width: 100%;
       max-width: 960px;
     }
-    .form-title {
-      display: none;
-    }
+    .form-title { display: none; }
     .form-grid-top {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr 1fr;
@@ -313,15 +310,10 @@ async function submitForm() {
   }
 }
 </script>
-  yearEl.disabled  = true;
-  }
-}
-</script>
 
-<!-- ADD THIS RIGHT HERE -->
 <script>
   function sendHeight() {
-    const height = document.body.scrollHeight;
+    const height = document.documentElement.scrollHeight;
     window.parent.postMessage({ frameHeight: height }, '*');
   }
   window.addEventListener('load', sendHeight);
@@ -329,7 +321,5 @@ async function submitForm() {
   new ResizeObserver(sendHeight).observe(document.body);
 </script>
 
-</body>
-</html>
 </body>
 </html>
